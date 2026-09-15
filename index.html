@@ -1,0 +1,390 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>PROJECT ANIMUS // Memory Corridor — Assassin's Creed Tribute</title>
+  <meta name="description" content="An ultra-immersive interactive digital archive and memory corridor honoring the Master Assassins of the Brotherhood across eras. Experience Eagle Vision, the Leap of Faith, and First Civilization artifacts." />
+  
+  <!-- Favicon -->
+  <link rel="icon" type="image/svg+xml" href="/favicon.svg" />
+
+  <!-- Google Fonts: Cinzel, Orbitron, Rajdhani, JetBrains Mono -->
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+  <link href="https://fonts.googleapis.com/css2?family=Cinzel:wght@400;600;700;900&family=JetBrains+Mono:ital,wght@0,300;0,400;0,500;0,700;1,400&family=Orbitron:wght@400;600;700;900&family=Rajdhani:wght@400;500;600;700&display=swap" rel="stylesheet" />
+
+  <!-- Master Stylesheet -->
+  <link rel="stylesheet" href="/src/style.css" />
+</head>
+<body data-vision="normal">
+
+  <!-- Custom HUD Cursor Reticle -->
+  <div id="custom-cursor" class="custom-cursor">
+    <div class="cursor-crosshair">
+      <span class="crosshair-corner tl"></span>
+      <span class="crosshair-corner tr"></span>
+      <span class="crosshair-corner bl"></span>
+      <span class="crosshair-corner br"></span>
+      <span class="crosshair-tick top"></span>
+      <span class="crosshair-tick bottom"></span>
+      <span class="crosshair-tick left"></span>
+      <span class="crosshair-tick right"></span>
+    </div>
+  </div>
+  <div id="cursor-dot" class="cursor-dot"></div>
+
+  <!-- Persistent 3D Canvas Memory Corridor Background -->
+  <canvas id="corridor-canvas" class="corridor-canvas"></canvas>
+
+  <!-- Atmospheric Scanline & Vignette Layers -->
+  <div class="hud-scanlines"></div>
+  <div class="hud-vignette"></div>
+
+  <!-- Abstergo Persistent Top Bar HUD -->
+  <header class="animus-hud-header" id="hud-header">
+    <div class="hud-inner">
+      <!-- Abstergo Tech Brand & Insignia -->
+      <div class="hud-brand">
+        <div class="abstergo-logo-icon">
+          <svg viewBox="0 0 40 40" class="abstergo-svg">
+            <polygon points="20,4 36,32 4,32" fill="none" stroke="currentColor" stroke-width="2"/>
+            <polygon points="20,12 30,30 10,30" fill="none" stroke="currentColor" stroke-width="1.5"/>
+            <polygon points="20,19 25,28 15,28" fill="currentColor"/>
+          </svg>
+        </div>
+        <div class="hud-brand-text">
+          <span class="hud-brand-title desktop-label">ABSTERGO ENTERTAINMENT</span>
+          <span class="hud-brand-title mobile-label">ABSTERGO</span>
+          <span class="hud-brand-sub hide-mobile">PROJECT ANIMUS // OS v4.8</span>
+        </div>
+      </div>
+
+      <!-- Live Telemetry Status Readouts -->
+      <div class="hud-telemetry hide-small-mobile">
+        <div class="telemetry-item">
+          <span class="tel-label">DNA STABILITY</span>
+          <span class="tel-val glow-cyan" id="hud-dna-stability">99.8%</span>
+        </div>
+        <div class="telemetry-divider hide-mobile"></div>
+        <div class="telemetry-item hide-mobile">
+          <span class="tel-label">SEQUENCE</span>
+          <span class="tel-val">SEQ 14 // RECON</span>
+        </div>
+        <div class="telemetry-divider hide-mobile"></div>
+        <div class="telemetry-item hide-mobile">
+          <span class="tel-label">ERA CONVERGENCE</span>
+          <span class="tel-val highlight-gold">49 BCE – 2026 CE</span>
+        </div>
+      </div>
+
+      <!-- HUD Controls: Glitch, Audio, Eagle Vision -->
+      <div class="hud-actions">
+        <!-- Desync Glitch Button -->
+        <button id="glitch-trigger-btn" class="hud-ctrl-btn" title="Simulate Animus Desync Glitch">
+          <span class="ctrl-icon">⚡</span>
+          <span class="ctrl-text hide-mobile">DESYNC</span>
+        </button>
+
+        <!-- Procedural Audio Toggle -->
+        <button id="audio-toggle-btn" class="hud-ctrl-btn" title="Toggle Animus Ambient Audio">
+          <span class="audio-waves">
+            <span class="bar"></span>
+            <span class="bar"></span>
+            <span class="bar"></span>
+          </span>
+          <span class="ctrl-text audio-label hide-mobile">AUDIO: ONLINE</span>
+        </button>
+
+        <!-- Global Eagle Vision Toggle Button -->
+        <button id="eagle-vision-btn" class="hud-ctrl-btn eagle-btn" title="Toggle Eagle Vision Scanner (Hotkey: V)">
+          <span class="eagle-eye-icon">
+            <svg viewBox="0 0 24 24" class="svg-eye">
+              <path d="M1 12s4-8 11-8 11 8 11 8-4 8-11 8-11-8-11-8z" fill="none" stroke="currentColor" stroke-width="2"/>
+              <circle cx="12" cy="12" r="3" fill="currentColor"/>
+            </svg>
+          </span>
+          <span class="ctrl-text btn-text desktop-label">EAGLE VISION [V]</span>
+          <span class="ctrl-text btn-text mobile-label">VISION</span>
+        </button>
+      </div>
+    </div>
+  </header>
+
+  <!-- MAIN VIEWPORT CONTENT -->
+  <main class="animus-main-content">
+
+    <!-- HERO SECTION: THE SYNCHRONIZATION ROOM -->
+    <section class="hero-section" id="hero-section">
+      <div class="hero-container">
+        
+        <!-- DNA Accessing Terminal Banner -->
+        <div class="hero-terminal-badge">
+          <span class="pulse-indicator"></span>
+          <span class="badge-text">ACCESSING GENETIC ARCHIVE // DNA SEQUENCE 14 VERIFIED // SYNCHRONIZING...</span>
+        </div>
+
+        <!-- Glowing Interactive Assassin Insignia Crest -->
+        <div class="hero-crest-wrapper">
+          <div class="crest-radar-ring outer"></div>
+          <div class="crest-radar-ring middle"></div>
+          <div class="crest-radar-ring inner"></div>
+          <div class="crest-svg-box" id="hero-crest">
+            <svg viewBox="0 0 400 400" class="assassin-crest-svg">
+              <!-- Official Assassin's Creed Brotherhood Insignia -->
+              <path class="crest-blade" d="M161.720 102.950 C 118.516 209.738,120.747 204.503,114.308 214.200 C 97.017 240.240,71.072 247.066,46.742 231.976 C 45.092 230.953,44.815 230.880,45.184 231.570 C 46.249 233.560,49.237 242.084,50.383 246.400 C 55.385 265.239,54.341 285.425,47.549 301.249 L 46.483 303.731 47.910 303.278 C 51.914 302.007,58.341 301.640,62.200 302.462 C 68.420 303.789,73.398 306.556,78.786 311.683 C 105.299 336.913,140.470 354.129,178.742 360.611 C 184.645 361.611,185.125 361.588,181.000 360.502 C 169.283 357.418,156.501 352.308,147.226 346.998 C 119.600 331.184,108.856 310.018,115.499 284.492 C 117.469 276.922,144.248 202.591,190.628 75.951 C 191.988 72.240,193.145 69.204,193.200 69.206 C 193.255 69.208,196.892 77.825,201.283 88.355 C 205.674 98.885,214.884 120.955,221.751 137.400 C 241.174 183.916,269.900 252.784,274.767 264.500 C 277.189 270.330,279.665 276.135,280.268 277.400 C 285.052 287.427,286.723 301.971,284.224 311.829 C 278.792 333.258,254.896 350.756,218.300 360.103 C 215.990 360.693,214.207 361.181,214.338 361.188 C 215.416 361.243,227.942 358.602,233.720 357.101 C 266.831 348.498,296.493 333.222,315.140 315.169 C 321.968 308.559,326.381 305.595,332.380 303.591 C 338.234 301.635,344.955 301.561,350.282 303.394 C 350.931 303.617,351.487 303.800,351.518 303.800 C 351.548 303.800,351.215 302.922,350.778 301.850 C 342.182 280.770,342.830 254.993,352.523 232.345 C 353.325 230.472,353.744 230.533,349.195 231.861 C 316.767 241.326,291.145 229.015,275.600 196.500 C 273.409 191.917,272.516 189.778,267.789 177.800 C 264.574 169.652,207.110 25.937,201.234 11.350 C 200.625 9.838,200.074 8.600,200.009 8.600 C 199.945 8.600,182.715 51.058,161.720 102.950 M40.316 311.979 C 46.600 320.144,58.219 332.240,68.100 340.904 C 98.928 367.935,133.384 384.896,168.400 390.278 C 186.488 393.058,212.515 392.938,230.051 389.994 C 274.441 382.541,320.237 354.801,352.706 315.698 C 355.460 312.381,356.334 311.202,354.781 312.900 C 324.593 345.895,283.441 370.022,248.373 375.287 C 221.048 379.389,202.022 373.068,198.475 358.710 C 198.095 357.171,198.068 357.194,197.527 359.500 C 193.758 375.585,165.752 381.330,133.741 372.584 C 102.824 364.138,68.261 341.773,41.193 312.700 C 39.673 311.066,39.512 310.934,40.316 311.979 " />
+            </svg>
+          </div>
+          <div class="crest-tech-brackets">
+            <span class="bracket-tag top-l">MK-IV // ISU INTERFACE</span>
+            <span class="bracket-tag bottom-r">CORE 99.8%</span>
+          </div>
+        </div>
+
+        <!-- Hero Typography -->
+        <div class="hero-typography">
+          <div class="hero-kicker">THE CREED OF AGES</div>
+          <h1 class="hero-headline">
+            WE WORK IN THE DARK<br />
+            <span class="headline-accent">TO SERVE THE LIGHT.</span>
+          </h1>
+          <p class="hero-subheadline">
+            Where other men blindly follow the truth, remember, <em>nothing is true</em>. 
+            Where other men are limited by morality or law, remember, <em>everything is permitted</em>.
+          </p>
+        </div>
+
+        <!-- Call to Action Buttons -->
+        <div class="hero-cta-group">
+          <button class="cta-primary-btn" id="hero-sync-btn">
+            <span class="btn-scanline"></span>
+            <span class="btn-icon">❖</span>
+            <span class="btn-label">SYNCHRONIZE MEMORY</span>
+          </button>
+
+          <button class="cta-secondary-btn eagle-trigger" id="hero-eagle-btn">
+            <span class="btn-icon">👁</span>
+            <span class="btn-text">EAGLE VISION MODE</span>
+            <span class="key-badge">KEY: V</span>
+          </button>
+        </div>
+
+        <!-- Animus Terminal HUD Footnotes -->
+        <div class="hero-terminal-footer">
+          <div class="terminal-node">
+            <span class="node-k">SUB-CARRIER:</span>
+            <span class="node-v">DESMOND_MILES_STREAM</span>
+          </div>
+          <div class="terminal-node">
+            <span class="node-k">ISU POLARITY:</span>
+            <span class="node-v glow-gold">POSITIVE // PRECURSOR VAULT</span>
+          </div>
+          <div class="terminal-node">
+            <span class="node-k">LOCAL PROTOCOL:</span>
+            <span class="node-v">ABSTERGO LAB 07, MONTREAL</span>
+          </div>
+        </div>
+
+      </div>
+    </section>
+
+    <!-- SECTION 2: THE BROTHERHOOD TIMELINE (Eras of the Creed) -->
+    <section class="timeline-section" id="timeline-section">
+      <div class="section-container">
+        
+        <div class="section-header">
+          <div class="section-tag">// ARCHIVE SECTION 01 // GENETIC CHRONICLES</div>
+          <h2 class="section-title">CHRONICLES OF THE BROTHERHOOD</h2>
+          <p class="section-desc">
+            Explore the ancestral lineages of the Master Assassins who stood against tyranny, recovered Pieces of Eden, and shaped the destiny of humanity across millennia.
+          </p>
+        </div>
+
+        <!-- Horizontal Era Tab Navigation -->
+        <nav class="timeline-nav-bar" id="timeline-nav" aria-label="Assassin Eras"></nav>
+
+        <!-- Detailed Assassin Dossier Display (Dynamically Populated) -->
+        <div class="timeline-viewport" id="timeline-viewport">
+          <div class="timeline-detail-box" id="timeline-detail">
+            <!-- Rendered by src/timeline.js -->
+          </div>
+        </div>
+
+      </div>
+    </section>
+
+    <!-- SECTION 3: THE CODEX & ARTIFACT VAULT -->
+    <section class="vault-section" id="vault-section">
+      <div class="section-container">
+        
+        <div class="section-header">
+          <div class="section-tag">// ARCHIVE SECTION 02 // PRECURSOR RELICS & SCHEMATICS</div>
+          <h2 class="section-title">THE CODEX & ARTIFACT VAULT</h2>
+          <p class="section-desc">
+            Classified engineering schematics, encrypted Precursor Isu artifacts, and medieval anatomical codices extracted directly from deep genetic memories.
+          </p>
+        </div>
+
+        <!-- Interactive 3-Card Relic Grid -->
+        <div class="vault-grid" id="vault-grid">
+          <!-- Rendered by src/vault.js -->
+        </div>
+
+      </div>
+    </section>
+
+    <!-- SECTION 4: THE CREED (Tenets & Interactive Ritual) -->
+    <section class="creed-section" id="creed-section">
+      <div class="section-container">
+
+        <div class="section-header">
+          <div class="section-tag">// ARCHIVE SECTION 03 // SACRED DOCTRINE & THE LEAP</div>
+          <h2 class="section-title">THE THREE IRON TENETS</h2>
+          <p class="section-desc">
+            The unyielding pillars forged in blood and discipline. Any who violate them risk exile, dishonor, or the swift stroke of a brother's blade.
+          </p>
+        </div>
+
+        <!-- Tenet Tabs & Display Card -->
+        <div class="tenets-wrapper">
+          <nav class="tenets-tabs" id="tenets-tabs" aria-label="Creed Tenets"></nav>
+          <div class="tenet-display" id="tenet-content">
+            <!-- Rendered by src/creed.js -->
+          </div>
+        </div>
+
+        <!-- THE LEAP OF FAITH INTERACTIVE EXPERIENCE -->
+        <div class="leap-experience-box" id="leap-box">
+          <div class="viewpoint-tower-card">
+            
+            <div class="viewpoint-hud-bar">
+              <span class="vp-tag">SYNCHRONIZATION VIEWPOINT</span>
+              <span class="vp-altitude">ALTITUDE: 384 METERS // HIGH PERCH</span>
+              <span class="vp-wind">WIND: 18 KNOTS NW</span>
+            </div>
+
+            <div class="viewpoint-body">
+              <div class="viewpoint-silhouette">
+                <div class="eagle-perch-icon">
+                  <svg viewBox="0 0 64 64" class="svg-eagle-perch">
+                    <!-- Stylized Eagle silhouette on wooden beam -->
+                    <path d="M12,48 L52,48 L52,52 L12,52 Z" fill="currentColor"/>
+                    <path d="M30,22 C34,16 42,14 48,16 C44,20 42,26 44,32 C38,30 34,34 30,42 C28,34 24,28 30,22 Z" fill="currentColor"/>
+                    <path d="M48,16 C52,15 56,18 58,22 C54,23 50,22 48,16 Z" fill="currentColor"/>
+                  </svg>
+                </div>
+                <div class="viewpoint-crosshair"></div>
+              </div>
+
+              <div class="viewpoint-info">
+                <h3 class="viewpoint-title">SYNCHRONIZE VIEWPOINT</h3>
+                <p class="viewpoint-desc">
+                  Step to the edge of the highest pinnacle. Clear your mind, surrender to gravity, and perform the sacred baptism of the Brotherhood into the sanctuary below.
+                </p>
+
+                <button class="leap-of-faith-btn" id="leap-of-faith-btn">
+                  <span class="leap-icon">🦅</span>
+                  <span class="leap-label">PERFORM LEAP OF FAITH</span>
+                  <span class="leap-sub">HIGH-VELOCITY DIVE SIMULATION</span>
+                </button>
+              </div>
+            </div>
+
+            <!-- Hay Landing Zone Target Indicator -->
+            <div class="hay-landing-zone" id="hay-landing-zone">
+              <div class="hay-cart-badge">
+                <span class="cart-icon">🧺</span>
+                <span class="cart-label">HAY WAGON SANCTUARY // GROUND LEVEL 0M</span>
+              </div>
+              <div class="feather-particle-container" id="feather-container"></div>
+            </div>
+
+            <!-- Synchronization Achieved Banner (hidden until landing) -->
+            <div class="sync-banner" id="sync-achieved-banner">
+              <div class="sync-banner-inner">
+                <div class="sync-crest-icon">❖</div>
+                <div class="sync-text-group">
+                  <div class="sync-banner-title">VIEWPOINT SYNCHRONIZED</div>
+                  <div class="sync-banner-sub">ANOMALIES RESOLVED // DNA MAP COMPLETED 100%</div>
+                </div>
+              </div>
+            </div>
+
+          </div>
+        </div>
+
+      </div>
+    </section>
+
+    <!-- SECTION 5: SUBJECT 16 PRECURSOR LORE (Bonus Animus Terminal) -->
+    <section class="precursor-terminal-section">
+      <div class="section-container">
+        
+        <div class="terminal-shell">
+          <div class="terminal-bar">
+            <div class="terminal-dots">
+              <span class="dot red"></span>
+              <span class="dot yellow"></span>
+              <span class="dot green"></span>
+            </div>
+            <div class="terminal-title">ABSTERGO PROJECT LEGACY // CLAY KACZMAREK (SUBJECT 16) GLYPH DECODER</div>
+            <div class="terminal-status">STATUS: DECRYPTED</div>
+          </div>
+
+          <div class="terminal-console">
+            <p class="term-line prompt">> abstergo-query --subject 16 --origin "eden"</p>
+            <p class="term-line output cyan">> CONNECTED TO MEMORY CORRIDOR DATABASE. ACCESS GRANTED.</p>
+            <p class="term-line text">> "They told us they were gods. But they were only those who came before. In the sweat of our brows, they forged us to serve, until the apple awakened our minds..."</p>
+            <p class="term-line gold">> PROTOCOL ISU-77 // ADAM & EVE LIBERATION SEQUENCE: CONFIRMED</p>
+            <p class="term-line muted">> [01001110 01101111 01110100 01101000 01101001 01101110 01100111 00100000 01101001 01110011 00100000 01110100 01110010 01110101 01100101]</p>
+            <p class="term-line crimson">> ALERT: TEMPLAR TRACE DETECTED. DISCONNECTING IN 3... 2... 1...</p>
+          </div>
+        </div>
+
+      </div>
+    </section>
+
+  </main>
+
+  <!-- ARTIFACT TERMINAL MODAL (Populated on inspect) -->
+  <div class="vault-modal-backdrop" id="vault-modal">
+    <div class="vault-modal-card">
+      <button class="modal-close-btn" title="Close Terminal (ESC)">✕</button>
+      <div class="modal-body-content">
+        <!-- Injected by src/vault.js -->
+      </div>
+    </div>
+  </div>
+
+  <!-- PERSISTENT FOOTER -->
+  <footer class="animus-hud-footer">
+    <div class="footer-container">
+      <div class="footer-col">
+        <div class="footer-motto">"REQUIESCAT IN PACE"</div>
+        <p class="footer-sub">NIHIL VERUM EST, LICET OMNIA</p>
+      </div>
+
+      <div class="footer-col center-col">
+        <div class="brotherhood-badge">
+          <span class="crest-small">❖</span>
+          <span>THE ASSASSIN BROTHERHOOD TRIBUTE ARCHIVE</span>
+        </div>
+        <p class="footer-disclaimer">
+          Crafted with reverence for the Assassin's Creed franchise and Ubisoft. Powered by modern Web Standards, Web Audio API, and Project Animus.
+        </p>
+      </div>
+
+      <div class="footer-col right-col">
+        <div class="footer-specs">
+          <span>TERMINAL: ANIMUS v4.8</span>
+          <span>LATENCY: 1.2 MS</span>
+          <span>SUBJECT: 17</span>
+        </div>
+      </div>
+    </div>
+  </footer>
+
+  <!-- Entry Script -->
+  <script type="module" src="/src/main.js"></script>
+</body>
+</html>
