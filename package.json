@@ -1,6 +1,33 @@
 {
-  "name": "assassin",
-  "version": "0.0.0",
+  "name": "assassins-creed-project-animus",
+  "version": "1.0.0",
+  "description": "The ultimate interactive Assassin's Creed web tribute and 3D Animus memory corridor simulator featuring Eagle Vision, Master Assassins lore, and Leap of Faith.",
+  "keywords": [
+    "assassins-creed",
+    "assassin-creed",
+    "assassins-creed-game",
+    "animus",
+    "project-animus",
+    "altair",
+    "ezio-auditore",
+    "edward-kenway",
+    "eagle-vision",
+    "leap-of-faith",
+    "brotherhood",
+    "hidden-blade",
+    "abstergo",
+    "web-audio-api",
+    "canvas-3d",
+    "interactive-experience",
+    "vite",
+    "vanilla-js"
+  ],
+  "author": "Akhilesh Gupta <gakhilesh946@gmail.com> (https://github.com/akhilesh10gupta)",
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/rajnigupta0560-art/Assassin-creed.git"
+  },
+  "homepage": "https://github.com/rajnigupta0560-art/Assassin-creed#readme",
   "private": true,
   "type": "module",
   "scripts": {

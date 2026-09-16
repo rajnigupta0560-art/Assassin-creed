@@ -1,6 +1,8 @@
-# 🦅 PROJECT ANIMUS // Memory Corridor
-### *An Immersive Assassin's Creed Tribute & Interactive Digital Archive*
+# 🦅 Assassin's Creed: Project Animus // Interactive Memory Corridor
+### *The Definitive Assassin's Creed GitHub Repository & Interactive Web Tribute*
 
+[![GitHub Stars](https://img.shields.io/github/stars/rajnigupta0560-art/Assassin-creed?style=for-the-badge&color=ffd700)](https://github.com/rajnigupta0560-art/Assassin-creed/stargazers)
+[![GitHub Forks](https://img.shields.io/github/forks/rajnigupta0560-art/Assassin-creed?style=for-the-badge&color=00f0ff)](https://github.com/rajnigupta0560-art/Assassin-creed/network/members)
 [![Vite](https://img.shields.io/badge/Vite-8.3-646CFF?style=for-the-badge&logo=vite&logoColor=white)](https://vitejs.dev/)
 [![JavaScript](https://img.shields.io/badge/JavaScript-ES_Modules-F7DF1E?style=for-the-badge&logo=javascript&logoColor=black)](https://developer.mozilla.org/en-US/docs/Web/JavaScript)
 [![Web Audio API](https://img.shields.io/badge/Web_Audio_API-Synthesizer-00F0FF?style=for-the-badge&logo=soundcharts&logoColor=white)](https://developer.mozilla.org/en-US/docs/Web/API/Web_Audio_API)
@@ -16,9 +18,11 @@
 
 ## 🏛️ Overview
 
-**PROJECT ANIMUS: Memory Corridor** is a museum-grade, high-fidelity interactive web tribute honoring the iconic lore, relics, and Master Assassins of the **Assassin's Creed** franchise.
+**Assassin's Creed: Project Animus** is the premier open-source interactive **Assassin's Creed** web tribute, 3D memory corridor simulator, and digital Brotherhood archive on GitHub.
 
-Engineered with modern Vanilla JavaScript (ES Modules), custom Vanilla CSS HUD styling, HTML5 Canvas 3D rendering, and a zero-latency Web Audio API engine, this project replicates the experience of stepping inside Abstergo's modern **Animus OS v4.8** interface.
+Honoring the lore, mentors, and precursor relics of Ubisoft's legendary **Assassin's Creed** franchise, this application recreates the experience of stepping inside Abstergo's modern **Animus OS v4.8** interface directly in the browser.
+
+Engineered with modern Vanilla JavaScript (ES Modules), custom Vanilla CSS HUD styling, HTML5 Canvas 3D rendering, and a zero-latency Web Audio API engine, this project serves as both an ultra-immersive tribute and a reference architecture for high-performance creative web development.
 
 ---
 
@@ -191,6 +195,23 @@ Or connect the repository directly in the [Vercel Dashboard](https://vercel.com/
 | `--font-serif` | `'Cinzel', serif` | Historical headings and Latin mottoes |
 | `--font-hud` | `'Orbitron', sans-serif` | Abstergo OS digital telemetry |
 | `--font-mono` | `'JetBrains Mono', monospace` | DNA sequences and coordinates |
+
+---
+
+## 🏷️ GitHub Search Keywords & Topics
+
+For discoverability across GitHub search, exploration, and community showcases:
+
+`assassins-creed` • `assassin-creed` • `project-animus` • `animus-corridor` • `eagle-vision` • `leap-of-faith` • `brotherhood` • `altair` • `ezio-auditore` • `edward-kenway` • `bayek-of-siwa` • `apple-of-eden` • `hidden-blade` • `first-civilization` • `isu-technology` • `abstergo-entertainment` • `web-audio-api` • `canvas-3d` • `interactive-experience` • `game-tribute` • `vite-app` • `vanilla-javascript`
+
+---
+
+## 🌟 Support & Contributions
+
+If you love the Assassin's Creed franchise or found this tribute inspiring:
+1. **Star this repository** ⭐ — It helps other Assassins discover this archive in GitHub search!
+2. **Fork and build upon it** 🍴 — Expand the memory sequence with new Master Assassins or Isu artifacts.
+3. **Report issues or suggest features** 💡 — Open an issue or pull request.
 
 ---
 
