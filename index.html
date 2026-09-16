@@ -265,15 +265,127 @@
 
             <div class="viewpoint-body">
               <div class="viewpoint-silhouette">
-                <div class="eagle-perch-icon">
-                  <svg viewBox="0 0 64 64" class="svg-eagle-perch">
-                    <!-- Stylized Eagle silhouette on wooden beam -->
-                    <path d="M12,48 L52,48 L52,52 L12,52 Z" fill="currentColor"/>
-                    <path d="M30,22 C34,16 42,14 48,16 C44,20 42,26 44,32 C38,30 34,34 30,42 C28,34 24,28 30,22 Z" fill="currentColor"/>
-                    <path d="M48,16 C52,15 56,18 58,22 C54,23 50,22 48,16 Z" fill="currentColor"/>
+                <div class="viewpoint-emblem-wrapper">
+                  <svg viewBox="0 0 160 160" class="svg-viewpoint-emblem" xmlns="http://www.w3.org/2000/svg">
+                    <defs>
+                      <linearGradient id="vpGoldGrad" x1="0%" y1="0%" x2="100%" y2="100%">
+                        <stop offset="0%" stop-color="#fff275" />
+                        <stop offset="50%" stop-color="#e5a910" />
+                        <stop offset="100%" stop-color="#996300" />
+                      </linearGradient>
+                      <linearGradient id="vpGoldCore" x1="0%" y1="0%" x2="0%" y2="100%">
+                        <stop offset="0%" stop-color="#fff8a6" />
+                        <stop offset="35%" stop-color="#ffd700" />
+                        <stop offset="100%" stop-color="#b87d00" />
+                      </linearGradient>
+                      <radialGradient id="vpGlowGrad" cx="50%" cy="50%" r="50%">
+                        <stop offset="0%" stop-color="rgba(255, 215, 0, 0.35)" />
+                        <stop offset="65%" stop-color="rgba(255, 215, 0, 0.08)" />
+                        <stop offset="100%" stop-color="transparent" />
+                      </radialGradient>
+                      <filter id="vpGlowFilter" x="-20%" y="-20%" width="140%" height="140%">
+                        <feGaussianBlur stdDeviation="2.5" result="blur" />
+                        <feComposite in="SourceGraphic" in2="blur" operator="over" />
+                      </filter>
+                    </defs>
+
+                    <!-- Ambient Glow -->
+                    <circle cx="80" cy="80" r="74" fill="url(#vpGlowGrad)" class="vp-ambient-aura" />
+
+                    <!-- Outer HUD Corner Brackets -->
+                    <g class="vp-hud-brackets" stroke="rgba(229, 169, 16, 0.5)" stroke-width="1.5" fill="none">
+                      <path d="M 14 30 L 14 14 L 30 14" />
+                      <path d="M 146 30 L 146 14 L 130 14" />
+                      <path d="M 14 130 L 14 146 L 30 146" />
+                      <path d="M 146 130 L 146 146 L 130 146" />
+                    </g>
+
+                    <!-- Outer Telemetry Ring -->
+                    <circle cx="80" cy="80" r="72" fill="none" stroke="rgba(229, 169, 16, 0.25)" stroke-width="1" stroke-dasharray="4 6" />
+
+                    <!-- Rotating Compass Dial -->
+                    <g class="vp-compass-outer">
+                      <circle cx="80" cy="80" r="66" fill="none" stroke="url(#vpGoldGrad)" stroke-width="1.5" stroke-dasharray="24 4 6 4 12 4 6 4" />
+                      <!-- North Cardinal Marker -->
+                      <polygon points="80,6 75,15 85,15" fill="#fff275" filter="url(#vpGlowFilter)" />
+                      <line x1="80" y1="145" x2="80" y2="154" stroke="#e5a910" stroke-width="2" />
+                      <line x1="145" y1="80" x2="154" y2="80" stroke="#e5a910" stroke-width="2" />
+                      <line x1="6" y1="80" x2="15" y2="80" stroke="#e5a910" stroke-width="2" />
+                      <!-- 45-deg ticks -->
+                      <circle cx="126.6" cy="33.4" r="1.5" fill="#ffd700" />
+                      <circle cx="33.4" cy="33.4" r="1.5" fill="#ffd700" />
+                      <circle cx="126.6" cy="126.6" r="1.5" fill="#ffd700" />
+                      <circle cx="33.4" cy="126.6" r="1.5" fill="#ffd700" />
+                    </g>
+
+                    <!-- Counter-Rotating Inner Cyan Reticle Ring -->
+                    <g class="vp-compass-inner">
+                      <circle cx="80" cy="80" r="54" fill="none" stroke="rgba(0, 240, 255, 0.45)" stroke-width="1.2" stroke-dasharray="6 10 14 10" />
+                      <!-- Radar Diamond Nodes -->
+                      <g fill="rgba(0, 240, 255, 0.85)">
+                        <polygon points="80,23 82,25 80,27 78,25" />
+                        <polygon points="137,80 135,82 133,80 135,78" />
+                        <polygon points="80,137 82,135 80,133 78,135" />
+                        <polygon points="23,80 25,82 27,80 25,78" />
+                      </g>
+                    </g>
+
+                    <!-- Sonar Pulse Ring -->
+                    <circle cx="80" cy="80" r="45" fill="none" stroke="rgba(255, 215, 0, 0.5)" stroke-width="1.2" class="vp-radar-pulse" />
+
+                    <!-- Viewpoint Eagle & Brotherhood Insignia -->
+                    <g class="vp-eagle-insignia" filter="url(#vpGlowFilter)">
+                      <!-- Outer Brotherhood Chevron Frame -->
+                      <path d="M 80 20 
+                               L 94 48 L 118 90 
+                               C 114 90, 106 91, 100 95 
+                               C 96 98, 92 104, 88 112 
+                               L 80 72 
+                               L 72 112 
+                               C 68 104, 64 98, 60 95 
+                               C 54 91, 46 90, 42 90 
+                               L 66 48 Z" 
+                            fill="none" stroke="url(#vpGoldGrad)" stroke-width="2" stroke-linejoin="round" />
+
+                      <!-- Lower Assassin Blade Tails -->
+                      <path d="M 62 100 C 58 110, 60 126, 74 135 C 76 132, 77 125, 76 118 Z" fill="url(#vpGoldCore)" opacity="0.9" />
+                      <path d="M 98 100 C 102 110, 100 126, 86 135 C 84 132, 83 125, 84 118 Z" fill="url(#vpGoldCore)" opacity="0.9" />
+                      <polygon points="80,126 83,138 80,144 77,138" fill="#fff275" />
+
+                      <!-- Majestic Stylized Eagle Head Profile (Facing Right) -->
+                      <path d="M 62 46
+                               C 65 39, 73 34, 83 34 
+                               C 94 34, 102 38, 109 45
+                               C 115 51, 122 55, 125 58
+                               C 120 60, 114 62, 109 68
+                               C 107 70, 106 72, 108 73
+                               C 111 73, 116 71, 121 66
+                               C 117 74, 110 77, 102 77
+                               C 96 77, 92 74, 86 78
+                               C 82 81, 78 86, 72 92
+                               C 74 86, 75 80, 74 76
+                               C 70 78, 67 82, 63 88
+                               C 65 82, 65 76, 64 71
+                               C 60 74, 57 78, 53 83
+                               C 55 77, 56 71, 55 65
+                               C 52 67, 49 70, 46 73
+                               C 48 66, 52 59, 56 53
+                               C 58 50, 60 48, 62 46 Z" 
+                            fill="url(#vpGoldCore)" />
+
+                      <!-- Piercing Raptor Eye Aperture -->
+                      <path d="M 82 48 L 92 49 L 88 54 Z" fill="#060b14" />
+                      <circle cx="86" cy="50.5" r="1.2" fill="#00f0ff" />
+
+                      <!-- Beak Mouth Line -->
+                      <path d="M 100 59 Q 112 60 123 60" stroke="#060b14" stroke-width="1.5" fill="none" stroke-linecap="round" />
+
+                      <!-- Plumage Separation Lines -->
+                      <path d="M 74 54 C 80 58, 86 64, 88 73" stroke="rgba(6, 11, 20, 0.85)" stroke-width="1.5" fill="none" stroke-linecap="round" />
+                      <path d="M 66 62 C 71 66, 76 71, 77 78" stroke="rgba(6, 11, 20, 0.85)" stroke-width="1.5" fill="none" stroke-linecap="round" />
+                    </g>
                   </svg>
                 </div>
-                <div class="viewpoint-crosshair"></div>
               </div>
 
               <div class="viewpoint-info">
