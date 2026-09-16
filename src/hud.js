@@ -81,15 +81,21 @@ export class HudController {
 
     this.audioToggleBtn.addEventListener('mouseenter', () => audio.playHoverChirp());
     this.audioToggleBtn.addEventListener('click', () => {
+      audio.ensureContext();
+      audio.preloadAllSfx();
       const isAudible = audio.toggleMute();
       this.updateAudioButtonState(isAudible);
       audio.playClick();
     });
 
-    // Start audio on first user click or touch anywhere on the page
+    // Unlock audio & start ambient on first user click or touch anywhere on the page
     const startAudioOnFirstInteract = () => {
-      audio.startAmbientDrone();
-      this.updateAudioButtonState(true);
+      audio.ensureContext();
+      audio.preloadAllSfx();
+      if (!audio.isMuted) {
+        audio.startAmbientDrone();
+        this.updateAudioButtonState(true);
+      }
       window.removeEventListener('click', startAudioOnFirstInteract);
       window.removeEventListener('touchstart', startAudioOnFirstInteract);
     };

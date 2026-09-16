@@ -1,121 +1,192 @@
 // Project Animus Hybrid Audio Engine
-// Seamlessly loads custom audio files (exact names or normalized names) with instant procedural fallback
+// Seamlessly loads custom audio files via Web Audio API AudioBuffer caching with zero-latency procedural fallbacks
 
 export const SOUND_CANDIDATES = {
-  ambient: ['/sounds/ambient.mp3', '/sounds/Ambient Music.mp3', '/sounds/Ambient.mp3'],
-  eagle_cry: ['/sounds/eagle_cry.mp3', '/sounds/Eagle Screech.mp3', '/sounds/eagle_screech.mp3'],
-  hidden_blade: ['/sounds/hidden_blade.mp3', '/sounds/Hidden Blade.mp3'],
-  leap_dive: ['/sounds/leap_dive.mp3', '/sounds/Leap of Faith.mp3', '/sounds/assassins-creed-leap-of-faith-sound.mp3'],
-  hay_landing: ['/sounds/hay_landing.mp3', '/sounds/Hay Landing.mp3'],
-  eagle_vision: ['/sounds/eagle_vision.mp3', '/sounds/Eagle Vision.mp3'],
-  apple_pulse: ['/sounds/apple_pulse.mp3', '/sounds/Apple of Eden.mp3'],
-  ui_hover: ['/sounds/ui_hover.mp3'],
-  ui_click: ['/sounds/ui_click.mp3'],
-  glitch: ['/sounds/glitch.mp3', '/sounds/Desync Glitch.mp3']
+  ambient: ['/sounds/ambient.mp3'],
+  eagle_cry: ['/sounds/eagle_cry.mp3'],
+  hidden_blade: ['/sounds/hidden_blade.mp3'],
+  leap_dive: ['/sounds/leap_dive.mp3'],
+  eagle_vision: ['/sounds/eagle_vision.mp3'],
+  apple_pulse: ['/sounds/apple_pulse.mp3'],
+  glitch: ['/sounds/glitch.mp3']
 };
+
+function resolvePath(path) {
+  const base = (typeof import.meta !== 'undefined' && import.meta.env && import.meta.env.BASE_URL) || '/';
+  return `${base.replace(/\/$/, '')}/${path.replace(/^\//, '')}`;
+}
 
 class AnimusAudioEngine {
   constructor() {
     this.ctx = null;
+    this.masterGain = null;
+    this.sfxGain = null;
+    this.ambientGain = null;
     this.isMuted = false;
     this.isInitialized = false;
     this.ambientNodes = null;
     this.customAmbientAudio = null;
-    this.audioCache = new Map();
-    this.failedPaths = new Set();
+    this.ambientPlayPromise = null;
+    this.bufferCache = new Map();
+    this.loadingPromises = new Map();
   }
 
   init() {
-    if (this.isInitialized) return;
+    if (this.isInitialized && this.ctx) return;
     try {
       const AudioContext = window.AudioContext || window.webkitAudioContext;
+      if (!AudioContext) return;
       this.ctx = new AudioContext();
+
+      // Master gain node
+      this.masterGain = this.ctx.createGain();
+      this.masterGain.gain.setValueAtTime(this.isMuted ? 0 : 1, this.ctx.currentTime);
+      this.masterGain.connect(this.ctx.destination);
+
+      // SFX gain bus
+      this.sfxGain = this.ctx.createGain();
+      this.sfxGain.gain.setValueAtTime(0.85, this.ctx.currentTime);
+      this.sfxGain.connect(this.masterGain);
+
+      // Ambient gain bus
+      this.ambientGain = this.ctx.createGain();
+      this.ambientGain.gain.setValueAtTime(0.5, this.ctx.currentTime);
+      this.ambientGain.connect(this.masterGain);
+
       this.isInitialized = true;
     } catch (e) {
-      console.warn("Web Audio API not supported", e);
+      console.warn("[PROJECT ANIMUS] Web Audio API initialization failed:", e);
     }
   }
 
   ensureContext() {
     if (!this.isInitialized) this.init();
     if (this.ctx && this.ctx.state === 'suspended') {
-      this.ctx.resume();
+      return this.ctx.resume().catch(() => {});
     }
+    return Promise.resolve();
   }
 
-  // Attempts playing through candidates list; if none succeed, calls fallbackFn
+  async preloadSfx(key) {
+    const candidates = SOUND_CANDIDATES[key];
+    if (!candidates || candidates.length === 0) return null;
+    const path = resolvePath(candidates[0]);
+
+    if (this.bufferCache.has(path)) {
+      return this.bufferCache.get(path);
+    }
+    if (this.loadingPromises.has(path)) {
+      return this.loadingPromises.get(path);
+    }
+
+    const loadPromise = (async () => {
+      try {
+        const response = await fetch(path);
+        if (!response.ok) {
+          throw new Error(`HTTP ${response.status} fetching ${path}`);
+        }
+        const arrayBuffer = await response.arrayBuffer();
+        if (!this.ctx) this.init();
+        if (!this.ctx) return null;
+        const audioBuffer = await this.ctx.decodeAudioData(arrayBuffer);
+        this.bufferCache.set(path, audioBuffer);
+        return audioBuffer;
+      } catch (err) {
+        console.warn(`[PROJECT ANIMUS] Audio buffer preload failed for ${key} (${path}):`, err);
+        return null;
+      } finally {
+        this.loadingPromises.delete(path);
+      }
+    })();
+
+    this.loadingPromises.set(path, loadPromise);
+    return loadPromise;
+  }
+
+  preloadAllSfx() {
+    Object.keys(SOUND_CANDIDATES).forEach(key => {
+      if (key !== 'ambient') {
+        this.preloadSfx(key);
+      }
+    });
+  }
+
+  // Attempts playing preloaded/cached buffer; if unavailable, calls fallbackFn instantly
   playFromCandidates(key, fallbackFn) {
     if (this.isMuted) return;
     this.ensureContext();
 
-    const candidates = SOUND_CANDIDATES[key] || [];
-    const available = candidates.filter(p => !this.failedPaths.has(p));
-
-    if (available.length === 0) {
-      fallbackFn();
+    const candidates = SOUND_CANDIDATES[key];
+    if (!candidates || candidates.length === 0) {
+      if (fallbackFn) fallbackFn();
       return;
     }
 
-    const tryNext = (index) => {
-      if (index >= available.length) {
-        fallbackFn();
+    const path = resolvePath(candidates[0]);
+    const cachedBuffer = this.bufferCache.get(path);
+
+    if (cachedBuffer && this.ctx && this.ctx.state === 'running') {
+      try {
+        const source = this.ctx.createBufferSource();
+        source.buffer = cachedBuffer;
+        source.connect(this.sfxGain || this.masterGain || this.ctx.destination);
+        source.start(0);
         return;
+      } catch (e) {
+        console.warn(`[PROJECT ANIMUS] Error playing buffer for ${key}:`, e);
       }
+    }
 
-      const path = available[index];
-      let sound = this.audioCache.get(path);
-      if (!sound) {
-        sound = new Audio(path);
-        this.audioCache.set(path, sound);
-      }
+    // If buffer is still loading or failed, execute procedural synth fallback
+    if (fallbackFn) {
+      fallbackFn();
+    }
 
-      sound.currentTime = 0;
-      const playPromise = sound.play();
-      if (playPromise !== undefined) {
-        playPromise.catch(() => {
-          this.failedPaths.add(path);
-          tryNext(index + 1);
-        });
-      }
-    };
-
-    tryNext(0);
+    // Trigger preload in background if not already cached
+    if (!cachedBuffer && !this.loadingPromises.has(path)) {
+      this.preloadSfx(key);
+    }
   }
 
   // Master ambient soundtrack (e.g. Ezio's Family or Animus Drone)
   startAmbientDrone() {
-    this.ensureContext();
     if (this.isMuted) return;
+    this.ensureContext();
 
     const candidates = SOUND_CANDIDATES.ambient || [];
-    const available = candidates.filter(p => !this.failedPaths.has(p));
+    if (candidates.length === 0) {
+      this.startProceduralAmbientDrone();
+      return;
+    }
 
-    const tryAmbient = (index) => {
-      if (index >= available.length) {
-        this.startProceduralAmbientDrone();
-        return;
-      }
+    const path = resolvePath(candidates[0]);
 
-      const path = available[index];
-      const audioEl = new Audio(path);
-      audioEl.loop = true;
-      audioEl.volume = 0.45;
+    if (!this.customAmbientAudio) {
+      this.customAmbientAudio = new Audio(path);
+      this.customAmbientAudio.loop = true;
+      this.customAmbientAudio.volume = 0.45;
+    }
 
-      const playPromise = audioEl.play();
-      if (playPromise !== undefined) {
-        playPromise.then(() => {
-          this.customAmbientAudio = audioEl;
-        }).catch(() => {
-          this.failedPaths.add(path);
-          tryAmbient(index + 1);
+    if (this.ambientPlayPromise) return;
+
+    this.ambientPlayPromise = this.customAmbientAudio.play();
+    if (this.ambientPlayPromise !== undefined) {
+      this.ambientPlayPromise
+        .then(() => {
+          this.ambientPlayPromise = null;
+          // If user clicked mute while loading, pause immediately
+          if (this.isMuted && this.customAmbientAudio) {
+            this.customAmbientAudio.pause();
+          }
+        })
+        .catch((err) => {
+          this.ambientPlayPromise = null;
+          if (err.name === 'AbortError' || err.name === 'NotAllowedError') {
+            return;
+          }
+          console.warn("[PROJECT ANIMUS] Custom ambient track failed, using procedural synthesis", err);
+          this.startProceduralAmbientDrone();
         });
-      } else {
-        this.startProceduralAmbientDrone();
-      }
-    };
-
-    if (available.length > 0) {
-      tryAmbient(0);
     } else {
       this.startProceduralAmbientDrone();
     }
@@ -157,7 +228,7 @@ class AnimusAudioEngine {
     osc2.connect(filter);
     osc3.connect(filter);
     filter.connect(masterGain);
-    masterGain.connect(this.ctx.destination);
+    masterGain.connect(this.ambientGain || this.masterGain || this.ctx.destination);
 
     osc1.start(t);
     osc2.start(t);
@@ -169,8 +240,19 @@ class AnimusAudioEngine {
 
   stopAmbientDrone() {
     if (this.customAmbientAudio) {
-      this.customAmbientAudio.pause();
+      if (this.ambientPlayPromise) {
+        this.ambientPlayPromise
+          .then(() => {
+            if (this.customAmbientAudio && this.isMuted) {
+              this.customAmbientAudio.pause();
+            }
+          })
+          .catch(() => {});
+      } else {
+        this.customAmbientAudio.pause();
+      }
     }
+
     if (!this.ambientNodes || !this.ctx) return;
     const t = this.ctx.currentTime;
     try {
@@ -178,10 +260,12 @@ class AnimusAudioEngine {
       this.ambientNodes.masterGain.gain.exponentialRampToValueAtTime(0.0001, t + 1);
       setTimeout(() => {
         if (this.ambientNodes) {
-          this.ambientNodes.osc1.stop();
-          this.ambientNodes.osc2.stop();
-          this.ambientNodes.osc3.stop();
-          this.ambientNodes.lfo.stop();
+          try {
+            this.ambientNodes.osc1.stop();
+            this.ambientNodes.osc2.stop();
+            this.ambientNodes.osc3.stop();
+            this.ambientNodes.lfo.stop();
+          } catch (e) {}
           this.ambientNodes = null;
         }
       }, 1100);
@@ -192,6 +276,9 @@ class AnimusAudioEngine {
 
   toggleMute() {
     this.isMuted = !this.isMuted;
+    if (this.masterGain && this.ctx) {
+      this.masterGain.gain.setValueAtTime(this.isMuted ? 0 : 1, this.ctx.currentTime);
+    }
     if (this.isMuted) {
       this.stopAmbientDrone();
     } else {
@@ -237,10 +324,10 @@ class AnimusAudioEngine {
 
       carrier.connect(filter);
       filter.connect(gain);
-      gain.connect(this.ctx.destination);
+      gain.connect(this.sfxGain || this.masterGain || this.ctx.destination);
       gain.connect(delay);
       delay.connect(delayGain);
-      delayGain.connect(this.ctx.destination);
+      delayGain.connect(this.sfxGain || this.masterGain || this.ctx.destination);
 
       carrier.start(t);
       vibrato.start(t);
@@ -275,7 +362,7 @@ class AnimusAudioEngine {
 
       whiteNoise.connect(noiseFilter);
       noiseFilter.connect(noiseGain);
-      noiseGain.connect(this.ctx.destination);
+      noiseGain.connect(this.sfxGain || this.masterGain || this.ctx.destination);
 
       const click1 = this.ctx.createOscillator();
       click1.type = 'triangle';
@@ -288,7 +375,7 @@ class AnimusAudioEngine {
       clickGain1.gain.exponentialRampToValueAtTime(0.001, t + 0.22);
 
       click1.connect(clickGain1);
-      clickGain1.connect(this.ctx.destination);
+      clickGain1.connect(this.sfxGain || this.masterGain || this.ctx.destination);
 
       const clink = this.ctx.createOscillator();
       clink.type = 'sine';
@@ -301,7 +388,7 @@ class AnimusAudioEngine {
       clinkGain.gain.exponentialRampToValueAtTime(0.001, t + 0.38);
 
       clink.connect(clinkGain);
-      clinkGain.connect(this.ctx.destination);
+      clinkGain.connect(this.sfxGain || this.masterGain || this.ctx.destination);
 
       whiteNoise.start(t);
       click1.start(t + 0.12);
@@ -323,7 +410,7 @@ class AnimusAudioEngine {
       this.playProceduralLeap(onLandingCallback);
     });
 
-    // Schedule landing
+    // Landing trigger at 1800ms
     setTimeout(() => {
       this.playHayLanding();
       if (onLandingCallback) onLandingCallback();
@@ -364,7 +451,7 @@ class AnimusAudioEngine {
 
     windSource.connect(windFilter);
     windFilter.connect(windGain);
-    windGain.connect(this.ctx.destination);
+    windGain.connect(this.sfxGain || this.masterGain || this.ctx.destination);
     windSource.start(t);
 
     const whistle = this.ctx.createOscillator();
@@ -378,54 +465,55 @@ class AnimusAudioEngine {
     whistleGain.gain.exponentialRampToValueAtTime(0.0001, t + 1.85);
 
     whistle.connect(whistleGain);
-    whistleGain.connect(this.ctx.destination);
+    whistleGain.connect(this.sfxGain || this.masterGain || this.ctx.destination);
     whistle.start(t);
     whistle.stop(t + 1.9);
   }
 
-  // Hay Landing
+  // Hay Landing (Direct Procedural Synthesis - No network latency)
   playHayLanding() {
-    this.playFromCandidates('hay_landing', () => {
-      if (!this.ctx) return;
-      const t = this.ctx.currentTime;
-      const thud = this.ctx.createOscillator();
-      thud.type = 'triangle';
-      thud.frequency.setValueAtTime(140, t);
-      thud.frequency.exponentialRampToValueAtTime(35, t + 0.3);
+    if (this.isMuted) return;
+    this.ensureContext();
+    if (!this.ctx) return;
 
-      const thudGain = this.ctx.createGain();
-      thudGain.gain.setValueAtTime(0.6, t);
-      thudGain.gain.exponentialRampToValueAtTime(0.001, t + 0.35);
+    const t = this.ctx.currentTime;
+    const thud = this.ctx.createOscillator();
+    thud.type = 'triangle';
+    thud.frequency.setValueAtTime(140, t);
+    thud.frequency.exponentialRampToValueAtTime(35, t + 0.3);
 
-      thud.connect(thudGain);
-      thudGain.connect(this.ctx.destination);
-      thud.start(t);
-      thud.stop(t + 0.4);
+    const thudGain = this.ctx.createGain();
+    thudGain.gain.setValueAtTime(0.6, t);
+    thudGain.gain.exponentialRampToValueAtTime(0.001, t + 0.35);
 
-      const bufferSize = Math.floor(this.ctx.sampleRate * 0.6);
-      const noiseBuffer = this.ctx.createBuffer(1, bufferSize, this.ctx.sampleRate);
-      const data = noiseBuffer.getChannelData(0);
-      for (let i = 0; i < bufferSize; i++) {
-        data[i] = (Math.random() * 2 - 1) * Math.exp(-i / (this.ctx.sampleRate * 0.15));
-      }
+    thud.connect(thudGain);
+    thudGain.connect(this.sfxGain || this.masterGain || this.ctx.destination);
+    thud.start(t);
+    thud.stop(t + 0.4);
 
-      const rustle = this.ctx.createBufferSource();
-      rustle.buffer = noiseBuffer;
+    const bufferSize = Math.floor(this.ctx.sampleRate * 0.6);
+    const noiseBuffer = this.ctx.createBuffer(1, bufferSize, this.ctx.sampleRate);
+    const data = noiseBuffer.getChannelData(0);
+    for (let i = 0; i < bufferSize; i++) {
+      data[i] = (Math.random() * 2 - 1) * Math.exp(-i / (this.ctx.sampleRate * 0.15));
+    }
 
-      const rustleFilter = this.ctx.createBiquadFilter();
-      rustleFilter.type = 'bandpass';
-      rustleFilter.frequency.setValueAtTime(1400, t);
-      rustleFilter.Q.setValueAtTime(2.0, t);
+    const rustle = this.ctx.createBufferSource();
+    rustle.buffer = noiseBuffer;
 
-      const rustleGain = this.ctx.createGain();
-      rustleGain.gain.setValueAtTime(0.3, t);
-      rustleGain.gain.exponentialRampToValueAtTime(0.001, t + 0.55);
+    const rustleFilter = this.ctx.createBiquadFilter();
+    rustleFilter.type = 'bandpass';
+    rustleFilter.frequency.setValueAtTime(1400, t);
+    rustleFilter.Q.setValueAtTime(2.0, t);
 
-      rustle.connect(rustleFilter);
-      rustleFilter.connect(rustleGain);
-      rustleGain.connect(this.ctx.destination);
-      rustle.start(t);
-    });
+    const rustleGain = this.ctx.createGain();
+    rustleGain.gain.setValueAtTime(0.3, t);
+    rustleGain.gain.exponentialRampToValueAtTime(0.001, t + 0.55);
+
+    rustle.connect(rustleFilter);
+    rustleFilter.connect(rustleGain);
+    rustleGain.connect(this.sfxGain || this.masterGain || this.ctx.destination);
+    rustle.start(t);
   }
 
   // Eagle Vision
@@ -449,7 +537,7 @@ class AnimusAudioEngine {
       subGain.gain.exponentialRampToValueAtTime(0.001, t + 0.7);
 
       sub.connect(subGain);
-      subGain.connect(this.ctx.destination);
+      subGain.connect(this.sfxGain || this.masterGain || this.ctx.destination);
       sub.start(t);
       sub.stop(t + 0.75);
 
@@ -463,7 +551,7 @@ class AnimusAudioEngine {
       chimeGain.gain.exponentialRampToValueAtTime(0.0001, t + 0.6);
 
       chime.connect(chimeGain);
-      chimeGain.connect(this.ctx.destination);
+      chimeGain.connect(this.sfxGain || this.masterGain || this.ctx.destination);
       chime.start(t);
       chime.stop(t + 0.65);
     });
@@ -491,52 +579,54 @@ class AnimusAudioEngine {
 
       osc.connect(filter);
       filter.connect(gain);
-      gain.connect(this.ctx.destination);
+      gain.connect(this.sfxGain || this.masterGain || this.ctx.destination);
       osc.start(t);
       osc.stop(t + 1.4);
     });
   }
 
-  // UI Hover
+  // UI Hover (Zero-latency Procedural Synthesis - No network calls)
   playHoverChirp() {
-    this.playFromCandidates('ui_hover', () => {
-      if (!this.ctx) return;
-      const t = this.ctx.currentTime;
-      const osc = this.ctx.createOscillator();
-      osc.type = 'sine';
-      osc.frequency.setValueAtTime(1600, t);
-      osc.frequency.exponentialRampToValueAtTime(2400, t + 0.04);
+    if (this.isMuted) return;
+    // Guard against suspended context before user activation
+    if (!this.ctx || this.ctx.state !== 'running') return;
 
-      const gain = this.ctx.createGain();
-      gain.gain.setValueAtTime(0.03, t);
-      gain.gain.exponentialRampToValueAtTime(0.001, t + 0.05);
+    const t = this.ctx.currentTime;
+    const osc = this.ctx.createOscillator();
+    osc.type = 'sine';
+    osc.frequency.setValueAtTime(1600, t);
+    osc.frequency.exponentialRampToValueAtTime(2400, t + 0.04);
 
-      osc.connect(gain);
-      gain.connect(this.ctx.destination);
-      osc.start(t);
-      osc.stop(t + 0.06);
-    });
+    const gain = this.ctx.createGain();
+    gain.gain.setValueAtTime(0.03, t);
+    gain.gain.exponentialRampToValueAtTime(0.001, t + 0.05);
+
+    osc.connect(gain);
+    gain.connect(this.sfxGain || this.masterGain || this.ctx.destination);
+    osc.start(t);
+    osc.stop(t + 0.06);
   }
 
-  // UI Click
+  // UI Click (Zero-latency Procedural Synthesis - No network calls)
   playClick() {
-    this.playFromCandidates('ui_click', () => {
-      if (!this.ctx) return;
-      const t = this.ctx.currentTime;
-      const osc = this.ctx.createOscillator();
-      osc.type = 'triangle';
-      osc.frequency.setValueAtTime(800, t);
-      osc.frequency.exponentialRampToValueAtTime(320, t + 0.05);
+    if (this.isMuted) return;
+    this.ensureContext();
+    if (!this.ctx) return;
 
-      const gain = this.ctx.createGain();
-      gain.gain.setValueAtTime(0.12, t);
-      gain.gain.exponentialRampToValueAtTime(0.001, t + 0.06);
+    const t = this.ctx.currentTime;
+    const osc = this.ctx.createOscillator();
+    osc.type = 'triangle';
+    osc.frequency.setValueAtTime(800, t);
+    osc.frequency.exponentialRampToValueAtTime(320, t + 0.05);
 
-      osc.connect(gain);
-      gain.connect(this.ctx.destination);
-      osc.start(t);
-      osc.stop(t + 0.07);
-    });
+    const gain = this.ctx.createGain();
+    gain.gain.setValueAtTime(0.12, t);
+    gain.gain.exponentialRampToValueAtTime(0.001, t + 0.06);
+
+    osc.connect(gain);
+    gain.connect(this.sfxGain || this.masterGain || this.ctx.destination);
+    osc.start(t);
+    osc.stop(t + 0.07);
   }
 
   // Glitch
@@ -565,7 +655,7 @@ class AnimusAudioEngine {
 
       noise.connect(filter);
       filter.connect(gain);
-      gain.connect(this.ctx.destination);
+      gain.connect(this.sfxGain || this.masterGain || this.ctx.destination);
       noise.start(t);
     });
   }
