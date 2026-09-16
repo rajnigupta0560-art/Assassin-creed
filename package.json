@@ -27,7 +27,7 @@
     "type": "git",
     "url": "https://github.com/rajnigupta0560-art/Assassin-creed.git"
   },
-  "homepage": "https://github.com/rajnigupta0560-art/Assassin-creed#readme",
+  "homepage": "https://assassincreed-abstergo.vercel.app/",
   "private": true,
   "type": "module",
   "scripts": {

@@ -1,6 +1,7 @@
 # 🦅 Assassin's Creed: Project Animus // Interactive Memory Corridor
 ### *The Definitive Assassin's Creed GitHub Repository & Interactive Web Tribute*
 
+[![Live Demo](https://img.shields.io/badge/LIVE_DEMO-assassincreed--abstergo.vercel.app-00f0ff?style=for-the-badge&logo=vercel&logoColor=white)](https://assassincreed-abstergo.vercel.app/)
 [![GitHub Stars](https://img.shields.io/github/stars/rajnigupta0560-art/Assassin-creed?style=for-the-badge&color=ffd700)](https://github.com/rajnigupta0560-art/Assassin-creed/stargazers)
 [![GitHub Forks](https://img.shields.io/github/forks/rajnigupta0560-art/Assassin-creed?style=for-the-badge&color=00f0ff)](https://github.com/rajnigupta0560-art/Assassin-creed/network/members)
 [![Vite](https://img.shields.io/badge/Vite-8.3-646CFF?style=for-the-badge&logo=vite&logoColor=white)](https://vitejs.dev/)
