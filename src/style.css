@@ -629,10 +629,22 @@ img {
 /* Hero Typography */
 .hero-kicker {
   font-family: var(--font-mono);
-  font-size: 0.85rem;
-  letter-spacing: 0.25em;
+  font-size: 0.82rem;
+  letter-spacing: 0.3em;
   color: var(--isu-gold-bright);
-  margin-bottom: 0.75rem;
+  margin-bottom: 0.85rem;
+  display: inline-flex;
+  align-items: center;
+  gap: 0.6rem;
+  text-transform: uppercase;
+}
+
+.hero-kicker::before,
+.hero-kicker::after {
+  content: '❖';
+  font-size: 0.65rem;
+  color: var(--brotherhood-crimson-bright);
+  opacity: 0.85;
 }
 
 .hero-headline {
@@ -640,16 +652,18 @@ img {
   font-size: clamp(2.4rem, 5.5vw, 4.4rem);
   font-weight: 900;
   line-height: 1.15;
-  letter-spacing: 0.04em;
-  color: var(--text-pure);
+  letter-spacing: 0.05em;
+  color: #ffffff;
   margin-bottom: 1.5rem;
-  text-shadow: 0 4px 30px rgba(0, 0, 0, 0.9);
+  text-shadow: 0 4px 30px rgba(0, 0, 0, 0.95);
 }
 
 .headline-accent {
-  background: linear-gradient(135deg, #ffffff 20%, var(--animus-cyan) 60%, var(--brotherhood-crimson-bright) 100%);
+  background: linear-gradient(180deg, #ffffff 0%, #ff526c 28%, #e61937 70%, #b30c25 100%);
   -webkit-background-clip: text;
   -webkit-text-fill-color: transparent;
+  filter: drop-shadow(0 0 24px rgba(230, 25, 55, 0.55));
+  display: inline-block;
 }
 
 .hero-subheadline {
