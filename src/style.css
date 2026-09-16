@@ -1544,32 +1544,115 @@ img {
   justify-content: center;
 }
 
-.brotherhood-seal {
-  width: 140px;
-  height: 140px;
-  border-radius: 50%;
-  background: rgba(200, 16, 46, 0.1);
-  border: 2px solid var(--brotherhood-crimson-bright);
-  box-shadow: 0 0 25px var(--brotherhood-crimson-glow);
+/* Holographic Animus Tenet Glyphs */
+.tenet-holo-glyph-wrapper {
+  position: relative;
+  width: 180px;
+  height: 180px;
   display: flex;
-  flex-direction: column;
   align-items: center;
   justify-content: center;
-  padding: 1rem;
-  color: var(--brotherhood-crimson-bright);
+  overflow: hidden;
+  border-radius: 10px;
+  background: radial-gradient(circle at center, rgba(10, 22, 40, 0.75) 0%, rgba(3, 7, 15, 0.95) 100%);
+  border: 1px solid rgba(255, 255, 255, 0.08);
+  box-shadow: inset 0 0 24px rgba(0, 0, 0, 0.8), 0 8px 32px rgba(0, 0, 0, 0.6);
+  transition: all var(--transition-smooth);
 }
 
-.seal-svg {
-  width: 65px;
-  height: 65px;
+.svg-tenet-glyph {
+  width: 170px;
+  height: 170px;
+  transition: all var(--transition-smooth);
 }
 
-.seal-inscription {
-  margin-top: 0.6rem;
-  font-family: var(--font-mono);
-  font-size: 0.6rem;
-  letter-spacing: 0.1em;
-  color: var(--brotherhood-crimson-bright);
+.tenet-holo-glyph-wrapper[data-tenet="1"] .svg-tenet-glyph {
+  filter: drop-shadow(0 0 16px rgba(255, 26, 64, 0.4));
+}
+.tenet-holo-glyph-wrapper[data-tenet="2"] .svg-tenet-glyph {
+  filter: drop-shadow(0 0 16px rgba(0, 240, 255, 0.4));
+}
+.tenet-holo-glyph-wrapper[data-tenet="3"] .svg-tenet-glyph {
+  filter: drop-shadow(0 0 16px rgba(255, 215, 0, 0.4));
+}
+
+.tenet-card:hover .svg-tenet-glyph {
+  transform: scale(1.04);
+}
+
+.tenet-holo-glyph-wrapper[data-tenet="1"]:hover {
+  border-color: rgba(255, 26, 64, 0.4);
+  box-shadow: inset 0 0 25px rgba(255, 26, 64, 0.15), 0 0 30px rgba(255, 26, 64, 0.25);
+}
+.tenet-holo-glyph-wrapper[data-tenet="2"]:hover {
+  border-color: rgba(0, 240, 255, 0.4);
+  box-shadow: inset 0 0 25px rgba(0, 240, 255, 0.15), 0 0 30px rgba(0, 240, 255, 0.25);
+}
+.tenet-holo-glyph-wrapper[data-tenet="3"]:hover {
+  border-color: rgba(255, 215, 0, 0.4);
+  box-shadow: inset 0 0 25px rgba(255, 215, 0, 0.15), 0 0 30px rgba(255, 215, 0, 0.25);
+}
+
+/* Rotating Holo Rings */
+.holo-ring-outer {
+  transform-origin: 80px 80px;
+  animation: holo-spin-cw 22s linear infinite;
+  transition: animation-duration var(--transition-smooth);
+}
+
+.tenet-card:hover .holo-ring-outer {
+  animation-duration: 8s;
+}
+
+.holo-ring-inner {
+  transform-origin: 80px 80px;
+  animation: holo-spin-ccw 16s linear infinite;
+  transition: animation-duration var(--transition-smooth);
+}
+
+.tenet-card:hover .holo-ring-inner {
+  animation-duration: 6s;
+}
+
+.holo-aura {
+  animation: holo-pulse 3.5s ease-in-out infinite alternate;
+  transform-origin: 80px 80px;
+}
+
+/* Horizontal Holo Scanline */
+.holo-scanline-bar {
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 2px;
+  background: linear-gradient(90deg, transparent, rgba(255, 255, 255, 0.8), transparent);
+  box-shadow: 0 0 8px rgba(255, 255, 255, 0.9);
+  animation: holo-scanline 3.2s ease-in-out infinite alternate;
+  pointer-events: none;
+  opacity: 0.5;
+  z-index: 2;
+}
+
+@keyframes holo-spin-cw {
+  from { transform: rotate(0deg); }
+  to { transform: rotate(360deg); }
+}
+
+@keyframes holo-spin-ccw {
+  from { transform: rotate(0deg); }
+  to { transform: rotate(-360deg); }
+}
+
+@keyframes holo-pulse {
+  0% { transform: scale(0.96); opacity: 0.55; }
+  100% { transform: scale(1.02); opacity: 0.95; }
+}
+
+@keyframes holo-scanline {
+  0% { transform: translateY(0); opacity: 0.2; }
+  50% { opacity: 0.65; }
+  100% { transform: translateY(180px); opacity: 0.2; }
 }
 
 .tenet-header {
@@ -2452,13 +2535,14 @@ html, body {
     text-align: left;
     padding: 0.85rem 1rem;
   }
-  .brotherhood-seal {
-    width: 110px;
-    height: 110px;
+  .tenet-holo-glyph-wrapper {
+    width: 140px;
+    height: 140px;
+    margin: 0 auto;
   }
-  .seal-svg {
-    width: 50px;
-    height: 50px;
+  .svg-tenet-glyph {
+    width: 130px;
+    height: 130px;
   }
 
   /* Leap of Faith Section */
