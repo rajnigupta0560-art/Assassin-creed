@@ -95,8 +95,15 @@
         </div>
       </div>
 
-      <!-- HUD Controls: Glitch, Audio, Eagle Vision -->
+      <!-- HUD Controls: Architect Dossier, Glitch, Audio, Eagle Vision -->
       <div class="hud-actions">
+        <!-- System Architect Dossier Button -->
+        <button id="architect-dossier-btn" class="hud-ctrl-btn architect-btn" title="Access System Architect Dossier (Hire / Contact Akhilesh Gupta)">
+          <span class="ctrl-icon pulse-dot">📡</span>
+          <span class="ctrl-text btn-text desktop-label">ARCHITECT</span>
+          <span class="ctrl-text btn-text mobile-label">INFO</span>
+        </button>
+
         <!-- Desync Glitch Button -->
         <button id="glitch-trigger-btn" class="hud-ctrl-btn" title="Simulate Animus Desync Glitch">
           <span class="ctrl-icon">⚡</span>
@@ -485,6 +492,136 @@
     </div>
   </div>
 
+  <!-- CLASSIFIED SYSTEM ARCHITECT DOSSIER MODAL -->
+  <div class="vault-modal-backdrop" id="architect-modal">
+    <div class="vault-modal-card architect-modal-card">
+      <button class="modal-close-btn" id="architect-modal-close" title="Close Dossier (ESC)">✕</button>
+
+      <!-- Holographic Header Bar -->
+      <div class="architect-dossier-header">
+        <div class="dossier-sys-tag">
+          <span class="sys-beacon-dot"></span>
+          <span>ABSTERGO ENTERTAINMENT // SYSTEM ARCHITECT DOSSIER // OS v4.8</span>
+        </div>
+        <span class="dossier-id-code">REF: AG-946 // CLASSIFIED PERSONNEL</span>
+      </div>
+
+      <div class="modal-dossier-grid architect-grid">
+        <!-- Left Column: Holographic Animus Crest & Technical Specs -->
+        <div class="modal-img-col">
+          <div class="architect-badge-container">
+            <!-- Animus Holographic Matrix Radar with Official Brotherhood Insignia -->
+            <div class="arch-crest-radar">
+              <div class="arch-radar-ring outer"></div>
+              <div class="arch-radar-ring middle"></div>
+              <div class="arch-radar-ring inner"></div>
+              <div class="arch-crest-box">
+                <svg viewBox="0 0 400 400" class="arch-official-crest-svg" xmlns="http://www.w3.org/2000/svg">
+                  <defs>
+                    <linearGradient id="archCrestGrad" x1="0%" y1="0%" x2="0%" y2="100%">
+                      <stop offset="0%" stop-color="#ffffff" />
+                      <stop offset="25%" stop-color="#ff4d6d" />
+                      <stop offset="70%" stop-color="#e61937" />
+                      <stop offset="100%" stop-color="#8b0000" />
+                    </linearGradient>
+                    <filter id="archCrestGlow" x="-20%" y="-20%" width="140%" height="140%">
+                      <feGaussianBlur stdDeviation="6" result="blur" />
+                      <feComposite in="SourceGraphic" in2="blur" operator="over" />
+                    </filter>
+                  </defs>
+                  <!-- Official Assassin's Creed Brotherhood Insignia Path -->
+                  <path fill="url(#archCrestGrad)" filter="url(#archCrestGlow)" d="M161.720 102.950 C 118.516 209.738,120.747 204.503,114.308 214.200 C 97.017 240.240,71.072 247.066,46.742 231.976 C 45.092 230.953,44.815 230.880,45.184 231.570 C 46.249 233.560,49.237 242.084,50.383 246.400 C 55.385 265.239,54.341 285.425,47.549 301.249 L 46.483 303.731 47.910 303.278 C 51.914 302.007,58.341 301.640,62.200 302.462 C 68.420 303.789,73.398 306.556,78.786 311.683 C 105.299 336.913,140.470 354.129,178.742 360.611 C 184.645 361.611,185.125 361.588,181.000 360.502 C 169.283 357.418,156.501 352.308,147.226 346.998 C 119.600 331.184,108.856 310.018,115.499 284.492 C 117.469 276.922,144.248 202.591,190.628 75.951 C 191.988 72.240,193.145 69.204,193.200 69.206 C 193.255 69.208,196.892 77.825,201.283 88.355 C 205.674 98.885,214.884 120.955,221.751 137.400 C 241.174 183.916,269.900 252.784,274.767 264.500 C 277.189 270.330,279.665 276.135,280.268 277.400 C 285.052 287.427,286.723 301.971,284.224 311.829 C 278.792 333.258,254.896 350.756,218.300 360.103 C 215.990 360.693,214.207 361.181,214.338 361.188 C 215.416 361.243,227.942 358.602,233.720 357.101 C 266.831 348.498,296.493 333.222,315.140 315.169 C 321.968 308.559,326.381 305.595,332.380 303.591 C 338.234 301.635,344.955 301.561,350.282 303.394 C 350.931 303.617,351.487 303.800,351.518 303.800 C 351.548 303.800,351.215 302.922,350.778 301.850 C 342.182 280.770,342.830 254.993,352.523 232.345 C 353.325 230.472,353.744 230.533,349.195 231.861 C 316.767 241.326,291.145 229.015,275.600 196.500 C 273.409 191.917,272.516 189.778,267.789 177.800 C 264.574 169.652,207.110 25.937,201.234 11.350 C 200.625 9.838,200.074 8.600,200.009 8.600 C 199.945 8.600,182.715 51.058,161.720 102.950 M40.316 311.979 C 46.600 320.144,58.219 332.240,68.100 340.904 C 98.928 367.935,133.384 384.896,168.400 390.278 C 186.488 393.058,212.515 392.938,230.051 389.994 C 274.441 382.541,320.237 354.801,352.706 315.698 C 355.460 312.381,356.334 311.202,354.781 312.900 C 324.593 345.895,283.441 370.022,248.373 375.287 C 221.048 379.389,202.022 373.068,198.475 358.710 C 198.095 357.171,198.068 357.194,197.527 359.500 C 193.758 375.585,165.752 381.330,133.741 372.584 C 102.824 364.138,68.261 341.773,41.193 312.700 C 39.673 311.066,39.512 310.934,40.316 311.979 " />
+                </svg>
+              </div>
+              <div class="arch-telemetry-corner tl">MK-IV // ISU</div>
+              <div class="arch-telemetry-corner br">SYS // AG-946</div>
+            </div>
+
+            <!-- Abstergo Security Clearance Bar -->
+            <div class="architect-clearance-bar">
+              <span class="clearance-beacon"></span>
+              <span class="clearance-text">CLEARANCE: LEVEL 5 // LEAD ARCHITECT</span>
+            </div>
+          </div>
+
+          <div class="modal-classification-box">
+            <div class="class-label">SECURITY DIRECTIVE // COMMISSIONS & HIRE</div>
+            <div class="class-val highlight-green">STATUS: AVAILABLE FOR BESPOKE PROJECTS</div>
+          </div>
+
+          <div class="architect-skills-chips">
+            <span class="skill-chip">CREATIVE FRONTEND</span>
+            <span class="skill-chip">3D CANVAS / WEBGL</span>
+            <span class="skill-chip">WEB AUDIO SYNTH</span>
+            <span class="skill-chip">UI / UX ARCHITECTURE</span>
+          </div>
+        </div>
+
+        <!-- Right Column: Lore Dossier & Contact Actions -->
+        <div class="modal-info-col">
+          <span class="modal-category">SYSTEM ARCHITECT DOSSIER // FREELANCE & ENGINEERING</span>
+          <h2 class="modal-title architect-name">AKHILESH GUPTA</h2>
+          <p class="modal-subtitle">Creative Frontend Engineer & Interactive Systems Architect</p>
+
+          <div class="modal-lore-box architect-statement">
+            <p>
+              Architect behind <strong>Project Animus: Memory Corridor</strong>. Specializing in transforming cinematic game aesthetics, interactive HUDs, 3D Canvas visualizers, and zero-latency soundscapes into production-grade web applications.
+            </p>
+            <p class="hire-pitch">
+              <em>Liked this design?</em> Whether you need a custom gaming portfolio, a bespoke startup web application, or an unforgettable interactive landing page, transmissions are always open.
+            </p>
+          </div>
+
+          <!-- Interactive Action Channels -->
+          <div class="architect-contact-grid">
+            <!-- Primary Action: Direct Email -->
+            <a href="mailto:gakhilesh946@gmail.com?subject=Project%20Inquiry%20from%20Project%20Animus&body=Hi%20Akhilesh%2C%0A%0AI%20explored%20your%20Assassin's%20Creed%20Project%20Animus%20tribute%20and%20loved%20the%20design.%20I'd%20like%20to%20discuss%20a%20project..." class="architect-action-btn primary-comms-btn" id="dossier-email-link">
+              <span class="action-icon">
+                <svg viewBox="0 0 24 24" width="20" height="20" fill="none" stroke="currentColor" stroke-width="2">
+                  <path d="M4 4h16c1.1 0 2 .9 2 2v12c0 1.1-.9 2-2 2H4c-1.1 0-2-.9-2-2V6c0-1.1.9-2 2-2z"/>
+                  <polyline points="22,6 12,13 2,6"/>
+                </svg>
+              </span>
+              <span class="action-details">
+                <strong class="action-main">INITIATE TRANSMISSION (SEND EMAIL)</strong>
+                <small class="action-sub">Direct Channel: gakhilesh946@gmail.com</small>
+              </span>
+              <span class="action-arrow">➔</span>
+            </a>
+
+            <!-- Secondary Actions: GitHub Matrix & Copy Address -->
+            <div class="architect-secondary-actions">
+              <a href="https://github.com/akhilesh10gupta" target="_blank" rel="noopener noreferrer" class="architect-action-btn secondary-btn" id="dossier-github-link">
+                <span class="action-icon">
+                  <svg viewBox="0 0 24 24" width="16" height="16" fill="currentColor">
+                    <path d="M12 2A10 10 0 0 0 2 12c0 4.42 2.87 8.17 6.84 9.5.5.08.66-.23.66-.5v-1.69c-2.77.6-3.36-1.34-3.36-1.34-.46-1.16-1.11-1.47-1.11-1.47-.91-.62.07-.6.07-.6 1 .07 1.53 1.03 1.53 1.03.87 1.52 2.34 1.07 2.91.83.1-.65.35-1.09.63-1.34-2.22-.25-4.55-1.11-4.55-4.92 0-1.11.38-2 1.03-2.71-.1-.25-.45-1.29.1-2.64 0 0 .84-.27 2.75 1.02.79-.22 1.65-.33 2.5-.33.85 0 1.71.11 2.5.33 1.91-1.29 2.75-1.02 2.75-1.02.55 1.35.2 2.39.1 2.64.65.71 1.03 1.6 1.03 2.71 0 3.82-2.34 4.66-4.57 4.91.36.31.69.92.69 1.85V21c0 .27.16.59.67.5C19.14 20.16 22 16.42 22 12A10 10 0 0 0 12 2z"/>
+                  </svg>
+                </span>
+                <span>GITHUB MATRIX (@akhilesh10gupta)</span>
+                <span class="action-arrow">↗</span>
+              </a>
+
+              <button id="copy-email-btn" class="architect-action-btn copy-btn" title="Copy Email Address to Clipboard">
+                <span class="action-icon">
+                  <svg viewBox="0 0 24 24" width="16" height="16" fill="none" stroke="currentColor" stroke-width="2">
+                    <rect x="9" y="9" width="13" height="13" rx="2" ry="2"/>
+                    <path d="M5 15H4a2 2 0 0 1-2-2V4a2 2 0 0 1 2-2h9a2 2 0 0 1 2 2v1"/>
+                  </svg>
+                </span>
+                <span id="copy-email-label">COPY COMMS ADDRESS</span>
+              </button>
+            </div>
+          </div>
+
+          <div class="dossier-footer-meta">
+            <span>LOCATION: GLOBAL REMOTE // OPEN FOR FREELANCE & CONTRACTS</span>
+            <span class="response-time">EST. RESPONSE: WITHIN 24 HOURS</span>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+
   <!-- PERSISTENT FOOTER -->
   <footer class="animus-hud-footer">
     <div class="footer-container">
@@ -501,6 +638,14 @@
         <p class="footer-disclaimer">
           Crafted with reverence for the Assassin's Creed franchise and Ubisoft. Powered by modern Web Standards, Web Audio API, and Project Animus.
         </p>
+        <!-- In-theme Architect Trigger Pill -->
+        <div class="footer-architect-pill">
+          <button id="footer-architect-btn" class="footer-architect-btn" title="Access System Architect Dossier">
+            <span class="sys-beacon-dot"></span>
+            <span class="footer-arch-label">ARCHITECT: AKHILESH GUPTA // HIRE / COMMISSIONS</span>
+            <span class="footer-arch-arrow">➔</span>
+          </button>
+        </div>
       </div>
 
       <div class="footer-col right-col">

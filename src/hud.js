@@ -24,6 +24,7 @@ export class HudController {
     this.setupEagleVision();
     this.setupGlitchTrigger();
     this.setupHeroButtons();
+    this.setupArchitectModal();
     this.startDnaOscillator();
   }
 
@@ -194,6 +195,72 @@ export class HudController {
         document.body.classList.remove('desync-shake');
       }, 600);
     });
+  }
+
+  setupArchitectModal() {
+    const modal = document.getElementById('architect-modal');
+    const openBtn = document.getElementById('architect-dossier-btn');
+    const footerBtn = document.getElementById('footer-architect-btn');
+    const closeBtn = document.getElementById('architect-modal-close');
+    const copyBtn = document.getElementById('copy-email-btn');
+    const copyLabel = document.getElementById('copy-email-label');
+
+    if (!modal) return;
+
+    const openModal = () => {
+      audio.ensureContext();
+      audio.playClick();
+      modal.classList.add('active');
+      document.body.classList.add('modal-open');
+    };
+
+    const closeModal = () => {
+      audio.playHoverChirp();
+      modal.classList.remove('active');
+      document.body.classList.remove('modal-open');
+    };
+
+    if (openBtn) {
+      openBtn.addEventListener('mouseenter', () => audio.playHoverChirp());
+      openBtn.addEventListener('click', openModal);
+    }
+
+    if (footerBtn) {
+      footerBtn.addEventListener('mouseenter', () => audio.playHoverChirp());
+      footerBtn.addEventListener('click', openModal);
+    }
+
+    if (closeBtn) {
+      closeBtn.addEventListener('click', closeModal);
+    }
+
+    modal.addEventListener('click', (e) => {
+      if (e.target === modal) closeModal();
+    });
+
+    window.addEventListener('keydown', (e) => {
+      if (e.key === 'Escape' && modal.classList.contains('active')) {
+        closeModal();
+      }
+    });
+
+    if (copyBtn && copyLabel) {
+      copyBtn.addEventListener('mouseenter', () => audio.playHoverChirp());
+      copyBtn.addEventListener('click', async () => {
+        audio.playClick();
+        try {
+          await navigator.clipboard.writeText('gakhilesh946@gmail.com');
+          copyLabel.textContent = 'COMMS COPIED! ✓';
+          copyBtn.classList.add('copied');
+          setTimeout(() => {
+            copyLabel.textContent = 'COPY COMMS ADDRESS';
+            copyBtn.classList.remove('copied');
+          }, 2500);
+        } catch (err) {
+          copyLabel.textContent = 'gakhilesh946@gmail.com';
+        }
+      });
+    }
   }
 
   startDnaOscillator() {
