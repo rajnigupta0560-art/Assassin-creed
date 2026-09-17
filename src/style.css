@@ -101,6 +101,52 @@ html {
   overflow-x: hidden;
 }
 
+/* ==========================================================================
+   ANIMUS TELEMETRY SCROLLBAR (GLOBAL & MODAL)
+   ========================================================================== */
+* {
+  scrollbar-width: thin;
+  scrollbar-color: var(--animus-cyan) rgba(4, 7, 13, 0.9);
+}
+
+::-webkit-scrollbar {
+  width: 7px;
+  height: 7px;
+}
+
+::-webkit-scrollbar-track {
+  background: 
+    repeating-linear-gradient(180deg, rgba(0, 240, 255, 0.06) 0px, rgba(0, 240, 255, 0.06) 2px, transparent 2px, transparent 12px),
+    rgba(4, 7, 13, 0.92);
+  border-left: 1px solid rgba(0, 240, 255, 0.18);
+}
+
+::-webkit-scrollbar-thumb {
+  background: linear-gradient(180deg, #f59e0b 0%, var(--animus-cyan) 30%, #0284c7 65%, var(--brotherhood-crimson-bright) 100%);
+  border-radius: 4px;
+  box-shadow: 0 0 10px rgba(0, 240, 255, 0.6), inset 0 0 3px rgba(255, 255, 255, 0.4);
+  transition: all var(--transition-fast);
+}
+
+::-webkit-scrollbar-thumb:hover {
+  background: linear-gradient(180deg, #ffffff 0%, #ef4444 35%, var(--brotherhood-crimson-bright) 70%, #99001a 100%);
+  box-shadow: 0 0 16px var(--brotherhood-crimson-glow), inset 0 0 4px #ffffff;
+}
+
+::-webkit-scrollbar-corner {
+  background: rgba(4, 7, 13, 0.98);
+}
+
+::-webkit-scrollbar-button {
+  display: none !important;
+  width: 0 !important;
+  height: 0 !important;
+}
+
+body.modal-open {
+  overflow: hidden;
+}
+
 body {
   position: relative;
   background-color: var(--bg-dark-void);
@@ -1543,16 +1589,46 @@ img {
   color: var(--text-dark);
 }
 
+.vault-modal-card {
+  scrollbar-width: thin;
+  scrollbar-color: var(--animus-cyan) rgba(4, 7, 14, 0.95);
+}
+
+.vault-modal-card::-webkit-scrollbar {
+  width: 6px;
+}
+
+.vault-modal-card::-webkit-scrollbar-track {
+  background: 
+    repeating-linear-gradient(180deg, rgba(0, 240, 255, 0.08) 0px, rgba(0, 240, 255, 0.08) 2px, transparent 2px, transparent 10px),
+    rgba(3, 7, 14, 0.88);
+  border-left: 1px dashed rgba(0, 240, 255, 0.35);
+  margin: 0.6rem 0;
+  border-radius: 4px;
+}
+
+.vault-modal-card::-webkit-scrollbar-thumb {
+  background: linear-gradient(180deg, var(--isu-gold-bright) 0%, var(--animus-cyan) 35%, #0284c7 65%, var(--brotherhood-crimson-bright) 100%);
+  border-radius: 4px;
+  box-shadow: 0 0 10px rgba(0, 240, 255, 0.7), inset 0 0 2px rgba(255, 255, 255, 0.5);
+  transition: all var(--transition-fast);
+}
+
+.vault-modal-card::-webkit-scrollbar-thumb:hover {
+  background: linear-gradient(180deg, #ffffff 0%, #ff2a2a 35%, var(--brotherhood-crimson-bright) 70%, #8b0000 100%);
+  box-shadow: 0 0 16px var(--brotherhood-crimson-glow), inset 0 0 4px #ffffff;
+}
+
 .architect-modal-card {
-  max-width: 950px;
-  padding: 1.8rem 2.2rem;
-  max-height: 92vh;
+  max-width: 960px;
+  padding: 1.5rem 2rem 1.4rem;
+  max-height: 94vh;
 }
 
 .architect-badge-container {
   position: relative;
   width: 100%;
-  height: 220px;
+  height: 200px;
   border-radius: 6px;
   overflow: hidden;
   border: 1px solid rgba(0, 240, 255, 0.28);
@@ -1561,15 +1637,15 @@ img {
   flex-direction: column;
   align-items: center;
   justify-content: space-between;
-  padding: 1.2rem 0.6rem 0.7rem;
-  margin-bottom: 1rem;
+  padding: 1rem 0.6rem 0.6rem;
+  margin-bottom: 0.85rem;
   box-shadow: inset 0 0 25px rgba(0, 0, 0, 0.7);
 }
 
 .arch-crest-radar {
   position: relative;
-  width: 140px;
-  height: 140px;
+  width: 128px;
+  height: 128px;
   display: flex;
   align-items: center;
   justify-content: center;
