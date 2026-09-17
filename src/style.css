@@ -2261,33 +2261,227 @@ img {
   max-width: 680px;
 }
 
+/* ==========================================================================
+   AUTHENTIC LEAP OF FAITH RITUAL BUTTON
+   ========================================================================== */
 .leap-of-faith-btn {
-  display: inline-flex;
-  flex-direction: column;
-  align-items: flex-start;
-  padding: 1.1rem 2.4rem;
-  background: linear-gradient(135deg, var(--brotherhood-crimson), #8b0000);
-  border: 1px solid #ff4d6d;
-  border-radius: 4px;
+  position: relative;
+  display: block;
+  width: 100%;
+  max-width: 640px;
+  padding: 1.4rem 2rem 1.3rem;
+  background: linear-gradient(135deg, rgba(14, 21, 35, 0.95) 0%, rgba(26, 10, 18, 0.94) 50%, rgba(6, 9, 16, 0.98) 100%);
+  border: 1px solid rgba(255, 77, 109, 0.5);
+  border-radius: 6px;
   color: #ffffff;
-  box-shadow: 0 0 30px var(--brotherhood-crimson-glow);
+  box-shadow: 0 10px 30px rgba(0, 0, 0, 0.8), 0 0 25px rgba(200, 16, 46, 0.3), inset 0 1px 0 rgba(255, 255, 255, 0.15);
   transition: all var(--transition-smooth);
+  cursor: pointer;
+  overflow: hidden;
+  text-align: left;
 }
 
+/* Atmospheric Glow & Windscan Layers */
+.leap-btn-glow {
+  position: absolute;
+  inset: 0;
+  background: radial-gradient(circle at 20% 50%, rgba(255, 30, 56, 0.22) 0%, transparent 65%);
+  pointer-events: none;
+  transition: opacity var(--transition-smooth);
+}
+
+.leap-btn-windscan {
+  position: absolute;
+  top: 0;
+  left: -100%;
+  width: 60%;
+  height: 100%;
+  background: linear-gradient(90deg, transparent, rgba(0, 240, 255, 0.15), rgba(255, 255, 255, 0.25), transparent);
+  transform: skewX(-25deg);
+  pointer-events: none;
+  animation: windScanRun 4s ease-in-out infinite;
+}
+
+@keyframes windScanRun {
+  0% { left: -100%; }
+  35%, 100% { left: 180%; }
+}
+
+/* Telemetry Brackets */
+.leap-telemetry {
+  position: absolute;
+  font-family: var(--font-mono);
+  font-size: 0.62rem;
+  letter-spacing: 0.12em;
+  color: var(--text-dark);
+  pointer-events: none;
+  transition: color var(--transition-fast);
+}
+.leap-telemetry.tl {
+  top: 0.5rem;
+  left: 0.8rem;
+  color: var(--isu-gold-bright);
+  opacity: 0.85;
+}
+.leap-telemetry.br {
+  bottom: 0.4rem;
+  right: 0.8rem;
+  color: var(--animus-cyan);
+  opacity: 0.85;
+}
+
+/* Button Content Row */
+.leap-btn-content {
+  position: relative;
+  z-index: 2;
+  display: grid;
+  grid-template-columns: 56px 1fr 36px;
+  align-items: center;
+  gap: 1.25rem;
+}
+
+/* Vector Diving Eagle */
+.leap-eagle-icon-box {
+  width: 54px;
+  height: 54px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  background: radial-gradient(circle at center, rgba(200, 16, 46, 0.3) 0%, rgba(0, 0, 0, 0.4) 70%);
+  border: 1px solid rgba(255, 77, 109, 0.4);
+  border-radius: 50%;
+  box-shadow: 0 0 16px rgba(200, 16, 46, 0.35);
+  transition: transform var(--transition-smooth), border-color var(--transition-smooth), box-shadow var(--transition-smooth);
+}
+
+.svg-diving-eagle {
+  width: 44px;
+  height: 44px;
+  transition: transform var(--transition-smooth);
+}
+
+/* Typography Group */
+.leap-text-group {
+  display: flex;
+  flex-direction: column;
+  gap: 0.25rem;
+}
+
+.leap-kicker {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.45rem;
+  font-family: var(--font-mono);
+  font-size: 0.65rem;
+  letter-spacing: 0.2em;
+  color: var(--isu-gold-bright);
+}
+.kicker-symbol {
+  font-size: 0.55rem;
+  color: var(--brotherhood-crimson-bright);
+}
+
+.leap-label {
+  font-family: var(--font-serif);
+  font-size: 1.28rem;
+  font-weight: 900;
+  letter-spacing: 0.08em;
+  color: #ffffff;
+  text-shadow: 0 2px 10px rgba(0, 0, 0, 0.8), 0 0 20px rgba(255, 255, 255, 0.2);
+  line-height: 1.2;
+}
+
+.leap-sub {
+  font-family: var(--font-mono);
+  font-size: 0.66rem;
+  letter-spacing: 0.08em;
+  color: var(--text-muted);
+}
+
+/* Plunge Arrow Box */
+.leap-arrow-box {
+  width: 36px;
+  height: 36px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  color: var(--isu-gold-bright);
+  transition: transform var(--transition-smooth), color var(--transition-smooth);
+}
+
+.svg-plunge-arrow {
+  width: 22px;
+  height: 22px;
+  animation: plungeArrowPulse 2s ease-in-out infinite;
+}
+
+@keyframes plungeArrowPulse {
+  0%, 100% { transform: translateY(0); opacity: 0.7; }
+  50% { transform: translateY(5px); opacity: 1; filter: drop-shadow(0 0 6px var(--isu-gold-bright)); }
+}
+
+/* Hover & Focus State */
 .leap-of-faith-btn:hover {
-  background: linear-gradient(135deg, var(--brotherhood-crimson-bright), var(--brotherhood-crimson));
-  box-shadow: 0 0 45px var(--brotherhood-crimson-glow), 0 0 15px #ffffff;
+  border-color: #ff3355;
+  background: linear-gradient(135deg, rgba(24, 16, 28, 0.98) 0%, rgba(36, 12, 22, 0.96) 50%, rgba(8, 12, 20, 0.98) 100%);
+  box-shadow: 0 14px 40px rgba(0, 0, 0, 0.9), 0 0 35px var(--brotherhood-crimson-glow), 0 0 15px rgba(212, 175, 55, 0.35);
   transform: translateY(-3px);
 }
 
-.leap-of-faith-btn.diving {
-  opacity: 0.6;
-  pointer-events: none;
+.leap-of-faith-btn:hover .leap-eagle-icon-box {
+  border-color: var(--isu-gold-bright);
+  box-shadow: 0 0 22px var(--isu-gold-glow);
+  transform: scale(1.08);
 }
 
-.leap-icon { font-size: 1.4rem; margin-bottom: 0.2rem; }
-.leap-label { font-family: var(--font-hud); font-size: 1.1rem; font-weight: 700; letter-spacing: 0.12em; }
-.leap-sub { font-family: var(--font-mono); font-size: 0.65rem; letter-spacing: 0.1em; opacity: 0.85; }
+.leap-of-faith-btn:hover .svg-diving-eagle {
+  transform: translateY(2px) scale(1.05);
+}
+
+.leap-of-faith-btn:hover .leap-label {
+  color: #ffffff;
+  text-shadow: 0 0 18px rgba(255, 77, 109, 0.6);
+}
+
+.leap-of-faith-btn:hover .leap-arrow-box {
+  color: #ffffff;
+  transform: translateY(3px);
+}
+
+/* Active / Diving State */
+.leap-of-faith-btn.diving {
+  pointer-events: none;
+  border-color: var(--animus-cyan);
+  box-shadow: 0 0 40px var(--animus-cyan-glow);
+  animation: diveButtonTremor 0.15s ease-in-out infinite;
+}
+
+@keyframes diveButtonTremor {
+  0%, 100% { transform: translate(0, 0); }
+  25% { transform: translate(-1px, 1px); }
+  75% { transform: translate(1px, -1px); }
+}
+
+.leap-of-faith-btn.diving .svg-diving-eagle {
+  transform: translateY(8px) scale(0.95);
+  filter: drop-shadow(0 0 10px var(--animus-cyan));
+}
+
+@media (max-width: 600px) {
+  .leap-of-faith-btn {
+    padding: 1.2rem 1.4rem;
+  }
+  .leap-btn-content {
+    grid-template-columns: 44px 1fr;
+    gap: 0.9rem;
+  }
+  .leap-arrow-box {
+    display: none;
+  }
+  .leap-label {
+    font-size: 1.1rem;
+  }
+}
 
 /* Hay Landing Zone */
 .hay-landing-zone {

@@ -418,10 +418,75 @@
                   Step to the edge of the highest pinnacle. Clear your mind, surrender to gravity, and perform the sacred baptism of the Brotherhood into the sanctuary below.
                 </p>
 
-                <button class="leap-of-faith-btn" id="leap-of-faith-btn">
-                  <span class="leap-icon">🦅</span>
-                  <span class="leap-label">PERFORM LEAP OF FAITH</span>
-                  <span class="leap-sub">HIGH-VELOCITY DIVE SIMULATION</span>
+                <!-- Authentic Animus Leap of Faith Ritual Button -->
+                <button class="leap-of-faith-btn" id="leap-of-faith-btn" title="Initiate Leap of Faith Ritual">
+                  <div class="leap-btn-glow"></div>
+                  <div class="leap-btn-windscan"></div>
+                  
+                  <!-- Corner Telemetry Brackets -->
+                  <span class="leap-telemetry tl">ALT // 384M APEX</span>
+                  <span class="leap-telemetry br">SANCTUARY // 0M</span>
+
+                  <!-- Interactive Button Content -->
+                  <div class="leap-btn-content">
+                    <!-- Vector Diving Eagle Silhouette -->
+                    <div class="leap-eagle-icon-box">
+                      <svg viewBox="0 0 64 64" class="svg-diving-eagle" xmlns="http://www.w3.org/2000/svg">
+                        <defs>
+                          <linearGradient id="eagleGoldGrad" x1="0%" y1="0%" x2="100%" y2="100%">
+                            <stop offset="0%" stop-color="#ffffff" />
+                            <stop offset="35%" stop-color="#ffd700" />
+                            <stop offset="100%" stop-color="#c48600" />
+                          </linearGradient>
+                          <linearGradient id="eagleWingGrad" x1="0%" y1="0%" x2="0%" y2="100%">
+                            <stop offset="0%" stop-color="#ff4d6d" />
+                            <stop offset="60%" stop-color="#e61937" />
+                            <stop offset="100%" stop-color="#8b0000" />
+                          </linearGradient>
+                          <filter id="eagleGlow" x="-20%" y="-20%" width="140%" height="140%">
+                            <feGaussianBlur stdDeviation="1.5" result="blur" />
+                            <feComposite in="SourceGraphic" in2="blur" operator="over" />
+                          </filter>
+                        </defs>
+
+                        <!-- Speed wind lines behind diving eagle -->
+                        <g stroke="rgba(0, 240, 255, 0.45)" stroke-width="1.2" stroke-linecap="round" class="eagle-speed-lines">
+                          <line x1="10" y1="14" x2="22" y2="26" />
+                          <line x1="18" y1="8" x2="30" y2="20" />
+                          <line x1="6" y1="24" x2="16" y2="34" />
+                        </g>
+
+                        <!-- Left Arched Diving Wing -->
+                        <path d="M 28 32 C 22 20, 14 10, 26 6 C 32 14, 34 22, 34 30 Z" fill="url(#eagleWingGrad)" />
+                        <!-- Right Arched Diving Wing -->
+                        <path d="M 36 32 C 34 18, 38 8, 50 12 C 46 20, 42 26, 38 32 Z" fill="url(#eagleWingGrad)" />
+                        <!-- Golden Raptor Body in Steep Stoop -->
+                        <path d="M 30 24 Q 34 16 38 24 L 38 42 Q 34 50 30 42 Z" fill="url(#eagleGoldGrad)" filter="url(#eagleGlow)" />
+                        <!-- Downward Piercing Beak Point -->
+                        <path d="M 32 46 L 34 56 L 36 46 Z" fill="#ffd700" />
+                        <!-- Tail Streamers -->
+                        <path d="M 28 14 L 34 8 L 40 14 L 36 20 L 32 20 Z" fill="rgba(255, 255, 255, 0.85)" />
+                      </svg>
+                    </div>
+
+                    <!-- Typography Group -->
+                    <div class="leap-text-group">
+                      <div class="leap-kicker">
+                        <span class="kicker-symbol">❖</span>
+                        <span>SACRED BROTHERHOOD RITUAL</span>
+                        <span class="kicker-symbol">❖</span>
+                      </div>
+                      <div class="leap-label">PERFORM LEAP OF FAITH</div>
+                      <div class="leap-sub">HIGH-VELOCITY DIVE SIMULATION // APEX TO SANCTUARY</div>
+                    </div>
+
+                    <!-- Downward Plunge Trajectory Arrow -->
+                    <div class="leap-arrow-box">
+                      <svg viewBox="0 0 24 24" class="svg-plunge-arrow">
+                        <path d="M12 3 L12 19 M5 12 L12 19 L19 12" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round" fill="none"/>
+                      </svg>
+                    </div>
+                  </div>
                 </button>
               </div>
             </div>
